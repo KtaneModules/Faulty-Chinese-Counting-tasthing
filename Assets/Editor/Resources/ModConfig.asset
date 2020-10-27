@@ -14,7 +14,10 @@ MonoBehaviour:
   id: faultyChineseCounting
   title: Faulty Chinese Counting
   author: TasThing
-  description: 
+  description: "It's been well over a year, and I still don't know if you but your
+    china in China.\r\n\r\nModule idea and implementation by TasThing.\r\n\r\nManual
+    HTML: https://ktane.timwi.de/HTML/Faulty%20Chinese%20Counting.html\r\nManual PDF:
+    https://ktane.timwi.de/PDF/Faulty%20Chinese%20Counting.pdf"
   version: 
   outputFolder: build
   previewImage: {fileID: 2800000, guid: 45ffa825a9e5de64f86473dbfface1de, type: 3}

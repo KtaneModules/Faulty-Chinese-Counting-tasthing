@@ -156,7 +156,7 @@ public class faultyChineseCounting : MonoBehaviour
             case 2:
                 return displays[i] * 2;
             case 3:
-                return displays[i];
+                return displays[i] + displays[3 - i];
             case 4:
                 return displays.Sum() / 4;
         }
