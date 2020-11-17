@@ -87,6 +87,7 @@ public class faultyChineseCounting : MonoBehaviour
 
     private void GenerateModule()
     {
+    tryAgain:
         for (int i = 0; i < 4; i++)
         {
             keyColors[i] = rnd.Range(0, 5);
@@ -111,10 +112,13 @@ public class faultyChineseCounting : MonoBehaviour
             default:
                 break;
         }
+        for (int i = 0; i < 4; i++)
+            values[i] = GetKeyValue(i);
+        if (values.Distinct().Count() != 4 || displays.Distinct().Count() != 4)
+            goto tryAgain;
         StartCoroutine(LedCycle());
         for (int i = 0; i < 4; i++)
         {
-            values[i] = GetKeyValue(i);
             labels[i].text = ChineseNumber(displays[i]);
             labels[i].color = textColors[specialCase == 4 ? keyColors[(i + 2) % 4] : keyColors[i]];
         }
