@@ -16,9 +16,12 @@ public class faultyChineseCounting : MonoBehaviour
     public KMSelectable[] keys;
     public KMSelectable[] ledButtons;
     public TextMesh[] labels;
+    public TextMesh[] colorblindLabels;
+    public TextMesh[] colorblindLeds;
     public Renderer[] leds;
     public Transform moduleTransform;
-    public Color[] colors;
+    public Material[] colors;
+    public Material black;
     public Color[] textColors;
 
     private int stage;
@@ -47,6 +50,10 @@ public class faultyChineseCounting : MonoBehaviour
             key.OnInteract += delegate () { PressKey(key, true); return false; };
         foreach (KMSelectable led in ledButtons)
             led.OnInteract += delegate () { PressLed(led); return false; };
+        foreach (GameObject text in colorblindLabels.Select(x => x.gameObject))
+            text.SetActive(GetComponent<KMColorblindMode>().ColorblindModeActive);
+        foreach (GameObject text in colorblindLeds.Select(x => x.gameObject))
+            text.SetActive(GetComponent<KMColorblindMode>().ColorblindModeActive);
     }
 
     private void Start()
@@ -59,6 +66,7 @@ public class faultyChineseCounting : MonoBehaviour
                 specialCaseUses = rnd.Range(0, 4);
                 Debug.LogFormat("[Faulty Chinese Counting #{0}] The {1} key is missing a label.", moduleId, positionNames[specialCaseUses]);
                 labels[specialCaseUses].gameObject.SetActive(false);
+                colorblindLabels[specialCaseUses].gameObject.SetActive(false);
                 break;
             case 1:
                 specialCaseUses = rnd.Range(0, 4);
@@ -120,7 +128,9 @@ public class faultyChineseCounting : MonoBehaviour
         for (int i = 0; i < 4; i++)
         {
             labels[i].text = ChineseNumber(displays[i]);
-            labels[i].color = textColors[specialCase == 4 ? keyColors[(i + 2) % 4] : keyColors[i]];
+            var usedColor = specialCase == 4 ? keyColors[(i + 2) % 4] : keyColors[i];
+            labels[i].color = textColors[usedColor];
+            colorblindLabels[i].text = "KRBGP"[usedColor].ToString();
         }
         Debug.LogFormat("[Faulty Chinese Counting #{0}] LED colors: {1}", moduleId, ledColors.Select(x => ledColorNames[x]).Join(", "));
         Debug.LogFormat("[Faulty Chinese Counting #{0}] Text colors: {1}", moduleId, keyColors.Select(x => textColorNames[x]).Join(", "));
@@ -211,12 +221,15 @@ public class faultyChineseCounting : MonoBehaviour
         {
             for (int i = 0; i < 3; i++)
             {
-                leds[0].material.color = colors[cycle1[i]];
-                leds[1].material.color = colors[cycle2[i]];
+                leds[0].material = colors[cycle1[i]];
+                colorblindLeds[0].text = "WRGOs"[cycle1[i]].ToString();
+                leds[1].material = colors[cycle2[i]];
+                colorblindLeds[1].text = "WRGOs"[cycle2[i]].ToString();
                 if (specialCase == 1)
                 {
                     labels[specialCaseUses].text = ChineseNumber(cycle3[i]);
                     labels[specialCaseUses].color = textColors[cycle4[i]];
+                    colorblindLabels[specialCaseUses].text = "KRBGP"[cycle4[i]].ToString();
                 }
                 yield return new WaitForSeconds(1f);
             }
@@ -256,7 +269,9 @@ public class faultyChineseCounting : MonoBehaviour
             moduleSolved = true;
             audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.CorrectChime, transform);
             foreach (Renderer led in leds)
-                led.material.color = Color.black;
+                led.material = black;
+            colorblindLeds[0].text = "";
+            colorblindLeds[1].text = "";
             Debug.LogFormat("[Faulty Chinese Counting #{0}] Module solved!", moduleId);
         }
     }
@@ -275,7 +290,9 @@ public class faultyChineseCounting : MonoBehaviour
     private IEnumerator Strike()
     {
         foreach (Renderer led in leds)
-            led.material.color = Color.black;
+            led.material = black;
+        colorblindLeds[0].text = "";
+        colorblindLeds[1].text = "";
         cantPress = true;
         yield return new WaitForSeconds(0.5f);
         GenerateModule();
