@@ -141,19 +141,19 @@ public class faultyChineseCounting : MonoBehaviour
         {
             case 'A':
                 solution = values.Select((x, i) => new { value = x, index = i }).OrderBy(x => x.value).Select(x => x.index).ToArray();
-                Debug.LogFormat("[Chinese Counting #{0}] The numbers should be pressed in asending order, by value.", moduleId);
+                Debug.LogFormat("[Faulty Chinese Counting #{0}] The numbers should be pressed in asending order, by value.", moduleId);
                 break;
             case 'D':
                 solution = values.Select((x, i) => new { value = x, index = i }).OrderByDescending(x => x.value).Select(x => x.index).ToArray();
-                Debug.LogFormat("[Chinese Counting #{0}] The numbers should be pressed in descending order, by value.", moduleId);
+                Debug.LogFormat("[Faulty Chinese Counting #{0}] The numbers should be pressed in descending order, by value.", moduleId);
                 break;
             case 'C':
                 solution = values.Select((x, i) => new { value = x, index = i }).OrderBy(x => ChineseNumber(x.value).Length).ThenByDescending(x => x.value).Select(x => x.index).ToArray();
-                Debug.LogFormat("[Chinese Counting #{0}] The numbers should be pressed in ascending order, by number of characters.", moduleId);
+                Debug.LogFormat("[Faulty Chinese Counting #{0}] The numbers should be pressed in ascending order, by number of characters.", moduleId);
                 break;
             default:
                 solution = values.Select((x, i) => new { value = x, index = i }).OrderByDescending(x => ChineseNumber(x.value).Length).ThenBy(x => x.value).Select(x => x.index).ToArray();
-                Debug.LogFormat("[Chinese Counting #{0}] The numbers should be pressed in descending order, by number of characters.", moduleId);
+                Debug.LogFormat("[Faulty Chinese Counting #{0}] The numbers should be pressed in descending order, by number of characters.", moduleId);
                 break;
         }
         Debug.LogFormat("[Faulty Chinese Counting #{0}] Solution: {1}", moduleId, solution.Select(x => positionNames[x]).Join(", "));
